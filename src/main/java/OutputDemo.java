@@ -1,7 +1,7 @@
 public class OutputDemo {
     public static void main(String[] args) {
         // Escape characters
-        //
+        // không có dấu xuộc huyền :((
 
         // System.out.printf
         // %s: Đại diện String
