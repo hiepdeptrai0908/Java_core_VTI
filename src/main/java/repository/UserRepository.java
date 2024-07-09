@@ -4,20 +4,18 @@ import entity.UserEntity;
 import util.JdbcUtil;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.LinkedList;
 import java.util.List;
 
-public class UserRepository {
+public class UserRepository implements IUserRepository {
 
     /**
     *@author: Quang Hiệp
     *@description: Lấy ra thông tin Employee và Manager có bằng project id
     *@date: 2024/07/09
     */
+    @Override
     public List<UserEntity> findEmployeeAndManagerByProjectId(int projectId) throws SQLException, IOException {
         String sql = "SELECT * FROM users WHERE role IN('EMPLOYEE', 'MANAGER') and project_id = ?";
         try (
@@ -38,7 +36,50 @@ public class UserRepository {
 
     /**
     *@author: Quang Hiệp
-    *@description: Phương thức lấy ra thông tin user từ ResultSet
+    *@description: Tra cứu thông tin Admin bằng email và password
+    *@date: 2024/07/09
+    */
+    @Override
+    public UserEntity findAdminByEmailAndPassword(String email, String password) throws SQLException, IOException {
+        String sql = "{CALL find_admin_by_email_and_password( ?, ?)} ";
+        try(
+                Connection connection = JdbcUtil.getConnection();
+                CallableStatement cStatement = connection.prepareCall(sql)
+        ){
+            cStatement.setString(1, email);
+            cStatement.setString(2, password);
+            try(ResultSet rs = cStatement.executeQuery()) {
+                if (rs.next()) {
+                    return getUser(rs);
+                }else {
+                    return null;
+                }
+            }
+        }
+    }
+
+    /**
+    *@author: Quang Hiệp
+    *@description: Tạo user với 2 tham số truyền vào là "full name, email"
+    *@date: 2024/07/09
+    */
+    @Override
+    public int createUser(String fullName, String email)
+            throws SQLException, IOException {
+        String sql = "INSERT INTO users(full_name, email) VALUES (?, ?)";
+        try (
+                Connection connection = JdbcUtil.getConnection();
+                PreparedStatement pStmt = connection.prepareStatement(sql)
+        ) {
+            pStmt.setString(1, fullName);
+            pStmt.setString(2, email);
+            return pStmt.executeUpdate();
+        }
+    }
+
+    /**
+    *@author: Quang Hiệp
+    *@description: Phương thức lấy ra thông tin user từ ResultSet trả về
     *@date: 2024/07/09
     */
     private static UserEntity getUser(ResultSet rs) throws SQLException {
@@ -53,6 +94,4 @@ public class UserRepository {
         user.setRole(rs.getString("role"));
         return user;
     }
-
-
 }

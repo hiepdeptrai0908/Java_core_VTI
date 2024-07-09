@@ -73,7 +73,7 @@ public class ScannerUtil {
     *@description: Full name chỉ chứa chữ, không chứa bất kỳ kí tự đặc biệt nào
     *@date: 2024/07/09
     */
-    public static String fullName() {
+    public static String inputFullName() {
         while (true) {
             String input = inputString();
             if(isAlphabetic(input)) {

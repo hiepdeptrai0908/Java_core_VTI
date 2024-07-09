@@ -1,13 +1,13 @@
-DROP DATABASE IF EXISTS exam_05;
-CREATE DATABASE exam_05;
-USE exam_05;
+DROP DATABASE IF EXISTS final_exam;
+CREATE DATABASE final_exam;
+USE final_exam;
 
 DROP TABLE IF EXISTS users;
 CREATE TABLE users (
 	id 				INT PRIMARY KEY AUTO_INCREMENT,
     full_name 		VARCHAR(50) 	NOT NULL,
     email 			VARCHAR(50) 	NOT NULL UNIQUE KEY,
-    password 		VARCHAR(50) 	NOT NULL,
+    password 		VARCHAR(50) 	NOT NULL DEFAULT "123456",
     exp_in_year 	INT,
     pro_skill 		VARCHAR(50),
     project_id 		INT,
@@ -23,7 +23,7 @@ VALUES				("Triệu Quang Hiệp" , "tqh@gmail.com"     , "hiep1234"    , null  
 DROP PROCEDURE IF EXISTS find_admin_by_email_and_password;
 DELIMITER $$
 CREATE PROCEDURE find_admin_by_email_and_password (
-	IN in_email		VARCHAR(50),
+	IN in_email			VARCHAR(50),
     IN in_password		VARCHAR(50)
 )
 BEGIN
